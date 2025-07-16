@@ -1,0 +1,7 @@
+{
+  "name": "DHBWVS-NotificationApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
