@@ -10,17 +10,19 @@
       <ion-card v-for="r in reminders" :key="r.id">
         <ion-card-header>
           <ion-card-title>{{ r.title }}</ion-card-title>
-          <ion-card-subtitle>{{r.details}}</ion-card-subtitle>
+          <ion-card-subtitle>
+            Datum:
+            {{ new Date(r.date).toLocaleDateString('de-DE',{
+              day:'2-digit',
+              month:'2-digit',
+              year:'numeric',
+              hour:'2-digit',
+              minute:'2-digit'
+            })}}
+          </ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
-          Datum:
-          {{ new Date(r.date).toLocaleDateString('de-DE',{
-            day:'2-digit',
-            month:'2-digit',
-            year:'numeric',
-            hour:'2-digit',
-            minute:'2-digit'
-          })}}
+          {{r.details}}
         </ion-card-content>
       </ion-card>
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
