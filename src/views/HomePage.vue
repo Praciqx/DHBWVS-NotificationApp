@@ -13,7 +13,14 @@
           <ion-card-subtitle>{{r.details}}</ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
-          {{ r.date }}
+          Datum:
+          {{ new Date(r.date).toLocaleDateString('de-DE',{
+            day:'2-digit',
+            month:'2-digit',
+            year:'numeric',
+            hour:'2-digit',
+            minute:'2-digit'
+          })}}
         </ion-card-content>
       </ion-card>
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
