@@ -10,6 +10,13 @@
             </ion-input>
             <ion-input v-model="details" label="Details" label-placement="floating" placeholder="Beschreibung eingeben">
             </ion-input>
+            <ion-label>Uhrzeit</ion-label>
+             <ion-datetime v-model="toDate"
+                :value="currentDate"
+                minute-values="0,15,30,45"
+                locale="de-DE">
+                <span slot="time-label">Uhrzeit</span>
+            </ion-datetime>
             <ion-button expand="block" @click="addReminder" shape="round">Speichern</ion-button>
         </ion-content>
     </ion-page>
