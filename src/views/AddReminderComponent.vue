@@ -2,18 +2,25 @@
     <ion-page>
         <ion-header :translucent="true">
         <ion-toolbar>
-            <ion-title>Reminder hinzufügen</ion-title>
+            <ion-title>Erinnerung hinzufügen</ion-title>
         </ion-toolbar>
         </ion-header>
-        <ion-content :fullscreen="true">
-            <ion-input v-model="title" label="Titel" label-placement="floating" placeholder="Titel eingeben">
+        <ion-content :fullscreen="true" class="ion-padding">
+            <ion-input :required="true" v-model="title"
+                label-placement="stacked"
+                placeholder="Titel hinzufügen"
+                 :class="{ 'ion-invalid': showErrors && title.trim() === '', 'ion-touched': showErrors }"
+                :errorText="title.trim() == '' && showErrors ? 'Titel ist erforderlich' : ''"
+                >
+                <ion-icon slot="start" :icon="pencil" aria-hidden="true"></ion-icon>
             </ion-input>
-            <ion-input v-model="details" label="Details" label-placement="floating" placeholder="Beschreibung eingeben">
+            <ion-input class="ion-margin-top ion-margin-bottom" v-model="details"
+                placeholder="Beschreibung hinzufügen">
+                  <ion-icon slot="start" :icon="listOutline" aria-hidden="true"></ion-icon>
             </ion-input>
             <ion-label>Uhrzeit</ion-label>
              <ion-datetime v-model="toDate"
                 :value="toDate"
-                minute-values="0,15,30,45"
                 locale="de-DE">
                 <span slot="time-label">Uhrzeit</span>
             </ion-datetime>
@@ -24,17 +31,23 @@
 
 <script lang="ts">
 
-import { IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
+import { IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
 import { defineComponent } from 'vue';
+import {listOutline,pencil} from 'ionicons/icons'
 import { createReminder, saveReminder } from '@/utils/reminderHelpers';
 
 export default defineComponent({
-    components:{IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
+    name:'AddReminder',
+    setup(){
+        return {listOutline,pencil};
+    },
+    components:{IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
         return {
             title:"",
             details:"",
             toDate: new Date().toISOString(),
+            showErrors:false,
         };
     },
     methods:{
@@ -42,6 +55,10 @@ export default defineComponent({
             const title = this.title;
             const details = this.details;
             const toDate = this.toDate;
+            if(!this.title.trim()){
+                this.showErrors = true;
+                return;
+            }
             const reminderObj = createReminder(title, details, toDate);
             await saveReminder(reminderObj);
         },
