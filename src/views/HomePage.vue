@@ -7,13 +7,22 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-card>
+      <ion-card v-for="r in reminders" :key="r.id">
         <ion-card-header>
-          <ion-card-title>Mant tropfen geben</ion-card-title>
-          <ion-card-subtitle>sehr wichtig, nicht vergessen</ion-card-subtitle>
+          <ion-card-title>{{ r.title }}</ion-card-title>
+          <ion-card-subtitle>
+            Datum:
+            {{ new Date(r.date).toLocaleDateString('de-DE',{
+              day:'2-digit',
+              month:'2-digit',
+              year:'numeric',
+              hour:'2-digit',
+              minute:'2-digit'
+            })}}
+          </ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
-          leerer Text
+          {{r.details}}
         </ion-card-content>
       </ion-card>
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
@@ -30,6 +39,7 @@
   import { defineComponent } from 'vue';
   import {add} from 'ionicons/icons'
   import { useIonRouter } from '@ionic/vue';
+  import { getCurrentReminder } from '@/utils/reminderHelpers';
 
   export default defineComponent({
     components: { IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
@@ -41,6 +51,14 @@
         const ionRouter = useIonRouter();
         ionRouter.navigate('/add','back')
       }
+    },
+    data(){
+      return {
+        reminders:[] as any[],
+      }
+    },
+    async created(){
+      this.reminders = await getCurrentReminder();
     }
   });
 
