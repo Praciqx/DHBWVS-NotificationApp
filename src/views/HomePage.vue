@@ -7,7 +7,7 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-card v-for="r in reminders" :key="r.id">
+      <ion-card v-for="r in reminders" :key="r.id" v-on:click="editReminder(r)">
         <ion-card-header>
           <ion-card-title>{{ r.title }}</ion-card-title>
           <ion-card-subtitle>
@@ -50,6 +50,9 @@
       navigateToAdd(){
         const ionRouter = useIonRouter();
         ionRouter.navigate('/add','back')
+      },
+      editReminder(r:any){
+        console.log(r.id);
       }
     },
     data(){
