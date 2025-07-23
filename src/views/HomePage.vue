@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>Reminder</ion-title>
+        <ion-title>Erinnerung</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -64,7 +64,7 @@
 
 </script>
 
- <style>
+ <!-- <style>
   :root {
     /**
    * Setting the variables for DEMO purposes only.
@@ -73,7 +73,7 @@
     --ion-safe-area-top: 0px;
     --ion-safe-area-bottom: 40px;
   }
-</style>  
+</style>   -->
 
 <style scoped>
 #container {
