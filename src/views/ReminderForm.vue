@@ -5,7 +5,7 @@
             <ion-buttons slot="start">
                 <ion-back-button default-href="/home" />
             </ion-buttons>
-            <ion-title>Erinnerung hinzufügen</ion-title>
+            <ion-title>{{isEditMode ? "Erinnerung bearbeiten" : "Erinnerung hinzufügen"}}</ion-title>
         </ion-toolbar>
         </ion-header>
         <ion-content :fullscreen="true" class="ion-padding">
@@ -38,20 +38,35 @@ import { IonBackButton,IonButtons,IonIcon,IonLabel, IonDatetime, IonButton,IonPa
 import { defineComponent } from 'vue';
 import {listOutline,pencil} from 'ionicons/icons'
 import { createReminder, saveReminder } from '@/utils/reminderHelpers';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
-    name:'AddReminder',
+    name:'ReminderFormComponent',
     setup(){
-        return {listOutline,pencil};
+        const route = useRoute();
+        return {listOutline,pencil, route};
     },
     components:{IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
         return {
+            id: null as string |null,
+            isEditMode: false,
             title:"",
             details:"",
             toDate: new Date().toISOString(),
             showErrors:false,
         };
+    },
+    created(){
+        this.title = "";
+        this.details = "";
+        this.id = this.route.params.id as string || null;
+        this.isEditMode = this.id != null;
+        if(this.isEditMode){
+            console.log("editMode");
+        }else{
+            console.log("newMode");
+        }
     },
     methods:{
         async addReminder(){
@@ -66,10 +81,6 @@ export default defineComponent({
             await saveReminder(reminderObj);
         },
     },
-    created(){
-        this.title = "";
-        this.details = "";
-    }
 });
 
 
