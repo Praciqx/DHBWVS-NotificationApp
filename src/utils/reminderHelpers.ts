@@ -54,6 +54,11 @@ const getCurrentReminder = async () => {
   return value ? JSON.parse(value) : [];
 };
 
+const getReminderById = async (reminder:any) => {
+  const currentReminder = getCurrentReminder();
+  console.log(currentReminder);
+}
+
 export async function initializeNotifications() {
   const perm = await LocalNotifications.requestPermissions();
   if(Capacitor.getPlatform() !== "web"){
@@ -67,4 +72,4 @@ export async function initializeNotifications() {
   }
 }
 
-export {getCurrentReminder};
+export {getCurrentReminder,getReminderById};

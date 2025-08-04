@@ -39,6 +39,7 @@ import { defineComponent } from 'vue';
 import {listOutline,pencil} from 'ionicons/icons'
 import { createReminder, saveReminder } from '@/utils/reminderHelpers';
 import { useRoute } from 'vue-router';
+import { Preferences } from '@capacitor/preferences';
 
 export default defineComponent({
     name:'ReminderFormComponent',
@@ -46,7 +47,7 @@ export default defineComponent({
         const route = useRoute();
         return {listOutline,pencil, route};
     },
-    components:{IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
+    components:{Preferences,IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
         return {
             id: null as string |null,
@@ -63,9 +64,7 @@ export default defineComponent({
         this.id = this.route.params.id as string || null;
         this.isEditMode = this.id != null;
         if(this.isEditMode){
-            console.log("editMode");
-        }else{
-            console.log("newMode");
+            this.getReminder();
         }
     },
     methods:{
@@ -80,6 +79,9 @@ export default defineComponent({
             const reminderObj = createReminder(title, details, toDate);
             await saveReminder(reminderObj);
         },
+        getReminder(){
+
+        }
     },
 });
 
