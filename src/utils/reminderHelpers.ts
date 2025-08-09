@@ -2,9 +2,9 @@ import { Preferences } from "@capacitor/preferences";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Capacitor } from '@capacitor/core';
 
-export function createReminder(title:string, details:string, date:string){
+export function createReminder(title:string, details:string, date:string, id?:string | null){
     return {
-        id:crypto.randomUUID(),
+        id: id || crypto.randomUUID(),
         title: title,
         details: details,
         date: date,
@@ -23,6 +23,13 @@ export async function saveReminder(reminderobject:any){
     
     scheduleNotification(id,title,details,date);
     return currentReminder;
+}
+
+export async function editReminder(reminderobject:any){
+  const currentReminder = await getCurrentReminder();
+  const editIndex= currentReminder.findIndex((r: { id: string }) => r.id === reminderobject.id);
+  currentReminder[editIndex] = reminderobject;
+  await Preferences.set({ key: 'reminders', value: JSON.stringify(currentReminder) });
 }
 
 export async function scheduleNotification(id:string, title: string, details: string, date: Date) {
