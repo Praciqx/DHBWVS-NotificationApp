@@ -54,9 +54,10 @@ const getCurrentReminder = async () => {
   return value ? JSON.parse(value) : [];
 };
 
-const getReminderById = async (reminder:any) => {
-  const currentReminder = getCurrentReminder();
-  console.log(currentReminder);
+const getReminderById = async (id:any) => {
+  const currentReminder = await getCurrentReminder();
+  const reminder = currentReminder.find((r: any) => r.id === id);
+  return reminder || null;
 }
 
 export async function initializeNotifications() {
