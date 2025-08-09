@@ -43,7 +43,7 @@
   import { useRouter } from 'vue-router';
 
   export default defineComponent({
-    components: { IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
+    components: { IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
     setup(){
       const router = useRouter();
       const ionRouter = useIonRouter();

@@ -49,7 +49,7 @@ export default defineComponent({
     components:{IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
         return {
-            id: null as string |null,
+            id: null as string | null,
             isEditMode: false,
             title:"",
             details:"",
