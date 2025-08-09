@@ -37,7 +37,7 @@
 import { IonBackButton,IonButtons,IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import {listOutline,pencil} from 'ionicons/icons'
-import { createReminder, saveReminder } from '@/utils/reminderHelpers';
+import { createReminder, saveReminder,getReminderById } from '@/utils/reminderHelpers';
 import { useRoute } from 'vue-router';
 import { Preferences } from '@capacitor/preferences';
 
@@ -79,8 +79,13 @@ export default defineComponent({
             const reminderObj = createReminder(title, details, toDate);
             await saveReminder(reminderObj);
         },
-        getReminder(){
-
+        async getReminder(){
+            const rem = await getReminderById(this.id);
+            if(rem){
+                this.title = rem.title;
+                this.details = rem.details;
+                this.toDate = rem.date;
+            }
         }
     },
 });
