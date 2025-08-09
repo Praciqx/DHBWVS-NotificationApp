@@ -1,4 +1,11 @@
 <template>
+    <ion-popover trigger="reminder-menu" trigger-action="hover">
+        <ion-content>
+            <ion-list lines="none">
+                <ion-item :button="true" :detail="false" @click="deleteReminder">Löschen</ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-popover>
     <ion-page>
         <ion-header :translucent="true">
         <ion-toolbar>
@@ -6,6 +13,11 @@
                 <ion-back-button default-href="/home" />
             </ion-buttons>
             <ion-title>{{isEditMode ? "Erinnerung bearbeiten" : "Erinnerung hinzufügen"}}</ion-title>
+            <ion-buttons slot="primary">
+                <ion-button id="reminder-menu">
+                    <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
+                </ion-button>
+            </ion-buttons>
         </ion-toolbar>
         </ion-header>
         <ion-content :fullscreen="true" class="ion-padding">
@@ -34,10 +46,10 @@
 
 <script lang="ts">
 
-import { IonBackButton,IonButtons,IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
+import { IonPopover,IonItem,IonList,IonBackButton,IonButtons,IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
 import { defineComponent } from 'vue';
-import {listOutline,pencil} from 'ionicons/icons'
-import { createReminder, saveReminder,getReminderById, editReminder } from '@/utils/reminderHelpers';
+import {listOutline,pencil,ellipsisVertical} from 'ionicons/icons'
+import { createReminder, saveReminder,getReminderById, editReminder,deleteReminderById } from '@/utils/reminderHelpers';
 import { useRoute } from 'vue-router';
 import { Preferences } from '@capacitor/preferences';
 
@@ -45,9 +57,9 @@ export default defineComponent({
     name:'ReminderFormComponent',
     setup(){
         const route = useRoute();
-        return {listOutline,pencil, route};
+        return {listOutline,pencil, route,ellipsisVertical};
     },
-    components:{Preferences,IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
+    components:{Preferences,IonPopover, IonList, IonItem,IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
         return {
             id: null as string | null,
@@ -82,6 +94,10 @@ export default defineComponent({
             }else{
                 await saveReminder(reminderObj);
             }
+            this.$router.push({ name: 'Home' });
+        },
+        async deleteReminder(){
+            deleteReminderById(this.id);
             this.$router.push({ name: 'Home' });
         },
         async getReminder(){

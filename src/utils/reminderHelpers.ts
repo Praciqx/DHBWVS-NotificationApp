@@ -67,6 +67,15 @@ const getReminderById = async (id:any) => {
   return reminder || null;
 }
 
+const deleteReminderById = async(id:any) =>{
+  const currentReminder = await getCurrentReminder();
+  const newReminders = currentReminder.filter((r: { id: string }) => r.id !== id);
+  await Preferences.set({
+    key: 'reminders',
+    value: JSON.stringify(newReminders)
+  });
+}
+
 export async function initializeNotifications() {
   const perm = await LocalNotifications.requestPermissions();
   if(Capacitor.getPlatform() !== "web"){
@@ -80,4 +89,4 @@ export async function initializeNotifications() {
   }
 }
 
-export {getCurrentReminder,getReminderById};
+export {getCurrentReminder,getReminderById,deleteReminderById};
