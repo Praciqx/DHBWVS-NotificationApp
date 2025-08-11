@@ -29,6 +29,8 @@ export async function editReminder(reminderobject:any){
   const currentReminder = await getCurrentReminder();
   const editIndex= currentReminder.findIndex((r: { id: string }) => r.id === reminderobject.id);
   currentReminder[editIndex] = reminderobject;
+  removeNotificationById(reminderobject.id);
+  scheduleNotification(reminderobject.id,reminderobject.title, reminderobject.details, reminderobject.date);
   await Preferences.set({ key: 'reminders', value: JSON.stringify(currentReminder) });
 }
 
@@ -54,6 +56,21 @@ export async function scheduleNotification(id:string, title: string, details: st
   }).catch(err =>{
     console.error("Fehler beim Planen der Notification!");
   });
+}
+
+async function removeNotificationById(reminderId:string){
+    const pending = await LocalNotifications.getPending();
+    console.log(pending);
+    const toCancel = pending.notifications
+      .filter(n => (n.extra as any)?.reminderId === reminderId)
+      .map(n => ({ id: n.id }));
+    if(toCancel.length){
+      await LocalNotifications.cancel({notifications:toCancel}).then(()=>{
+        console.log("Notification mit der ID "+reminderId+" wurde gelöscht.");
+      }).catch(err=>{
+        console.log("Notification mit der ID "+reminderId+" konnte nicht gelöscht werden.~n"+err)
+      });
+    }
 }
 
 const getCurrentReminder = async () => {
