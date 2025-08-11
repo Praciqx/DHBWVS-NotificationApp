@@ -30,7 +30,7 @@
           </ion-item>
       </ion-list>
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-        <ion-fab-button title="addReminder" router-link="/add" router-direction="forward">
+        <ion-fab-button title="addReminder" @click="navigateToAdd()">
           <ion-icon :icon="add" title="addReminderIcon"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -41,7 +41,7 @@
 <script lang="ts">
   import { IonItem,IonList,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonIcon,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/vue';
   import { defineComponent } from 'vue';
-  import {add} from 'ionicons/icons'
+  import {add,trash} from 'ionicons/icons'
   import { useIonRouter } from '@ionic/vue';
   import { getCurrentReminder } from '@/utils/reminderHelpers';
   import { useRouter } from 'vue-router';
@@ -51,13 +51,13 @@
     setup(){
       const router = useRouter();
       const ionRouter = useIonRouter();
-      return {add, router, ionRouter};
+      return {add, router, ionRouter,trash};
     },
     methods:{
-       navigateToAdd(){
-        //  ionRouter.navigate('/add','forward')
-        this.router.push("/addtwo")
-       },
+      navigateToAdd(){
+        // this.router.push({name:'AddReminder'})
+        this.ionRouter.navigate('add');
+      },
       editReminder(r:any){
         this.router.push({ name: 'EditReminder', params: { id: r.id } })
       },
