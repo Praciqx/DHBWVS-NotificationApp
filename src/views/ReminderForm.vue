@@ -88,24 +88,23 @@ export default defineComponent({
     },
     methods:{
         async addReminder(){
-            const title = this.title;
-            const details = this.details;
-            const toDate = this.toDate;
             if(!this.title.trim()){
                 this.showErrors = true;
                 return;
             }
-            const reminderObj = createReminder(title, details, toDate, this.id);
+            const reminderObj = createReminder(this.title, this.details, this.toDate, this.id);
             if(this.isEditMode){
                 await editReminder(reminderObj);
             }else{
                 await saveReminder(reminderObj);
             }
+            (document.activeElement as any).blur();
             this.$router.push({ name: 'Home' });
         },
         async deleteReminder(){
             await deleteReminderById(this.id);
             this.showDeleteAlert = false;
+            (document.activeElement as any).blur();
             this.$router.push({ name: 'Home' });
         },
         async getReminder(){
