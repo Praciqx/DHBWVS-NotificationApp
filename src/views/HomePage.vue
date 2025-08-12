@@ -71,6 +71,7 @@
         const reminderList = await getCurrentReminder();
         this.reminders = reminderList.map((r:any) => ({ ...r, due: this.calcDueDate(r.date) }));
       },
+      // #region nur Design
       isSameMonth(a: string, b: string){
         const da = new Date(a), db = new Date(b);
         return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth();
@@ -95,6 +96,7 @@
         }
         return "";
       }
+      // #endregion
     },
     data(){
       return {
