@@ -2,6 +2,9 @@
     <ion-page>
         <ion-header :translucent="true">
         <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-back-button default-href="/home" />
+            </ion-buttons>
             <ion-title>Erinnerung hinzufügen</ion-title>
         </ion-toolbar>
         </ion-header>
@@ -31,7 +34,7 @@
 
 <script lang="ts">
 
-import { IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
+import { IonBackButton,IonButtons,IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import {listOutline,pencil} from 'ionicons/icons'
 import { createReminder, saveReminder } from '@/utils/reminderHelpers';
@@ -41,7 +44,7 @@ export default defineComponent({
     setup(){
         return {listOutline,pencil};
     },
-    components:{IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
+    components:{IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
         return {
             title:"",

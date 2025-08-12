@@ -2,9 +2,9 @@ import { Preferences } from "@capacitor/preferences";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Capacitor } from '@capacitor/core';
 
-export function createReminder(title:string, details:string, date:string){
+export function createReminder(title:string, details:string, date:string, id?:string | null){
     return {
-        id:crypto.randomUUID(),
+        id: id || crypto.randomUUID(),
         title: title,
         details: details,
         date: date,
@@ -25,6 +25,15 @@ export async function saveReminder(reminderobject:any){
     return currentReminder;
 }
 
+export async function editReminder(reminderobject:any){
+  const currentReminder = await getCurrentReminder();
+  const editIndex= currentReminder.findIndex((r: { id: string }) => r.id === reminderobject.id);
+  currentReminder[editIndex] = reminderobject;
+  removeNotificationById(reminderobject.id);
+  scheduleNotification(reminderobject.id,reminderobject.title, reminderobject.details, reminderobject.date);
+  await Preferences.set({ key: 'reminders', value: JSON.stringify(currentReminder) });
+}
+
 export async function scheduleNotification(id:string, title: string, details: string, date: Date) {
   console.log(date);
   await LocalNotifications.schedule({
@@ -33,7 +42,10 @@ export async function scheduleNotification(id:string, title: string, details: st
         title: title,
         body: details,
         id: Math.floor(Math.random() * 1000000), 
-        schedule: { at: new Date(date)}, 
+        schedule: { 
+          at: new Date(date),
+          allowWhileIdle: true,
+        }, 
         sound: undefined,
         smallIcon: "ic_stat_icon_config_sample",
         actionTypeId: "reminders",
@@ -49,10 +61,40 @@ export async function scheduleNotification(id:string, title: string, details: st
   });
 }
 
+async function removeNotificationById(reminderId:string){
+    const pending = await LocalNotifications.getPending();
+    console.log(pending);
+    const toCancel = pending.notifications
+      .filter(n => (n.extra as any)?.reminderId === reminderId)
+      .map(n => ({ id: n.id }));
+    if(toCancel.length){
+      await LocalNotifications.cancel({notifications:toCancel}).then(()=>{
+        console.log("Notification mit der ID "+reminderId+" wurde gelöscht.");
+      }).catch(err=>{
+        console.log("Notification mit der ID "+reminderId+" konnte nicht gelöscht werden.~n"+err)
+      });
+    }
+}
+
 const getCurrentReminder = async () => {
   const { value } = await Preferences.get({ key: 'reminders' });
   return value ? JSON.parse(value) : [];
 };
+
+const getReminderById = async (id:any) => {
+  const currentReminder = await getCurrentReminder();
+  const reminder = currentReminder.find((r: any) => r.id === id);
+  return reminder || null;
+}
+
+const deleteReminderById = async(id:any) =>{
+  const currentReminder = await getCurrentReminder();
+  const newReminders = currentReminder.filter((r: { id: string }) => r.id !== id);
+  await Preferences.set({
+    key: 'reminders',
+    value: JSON.stringify(newReminders)
+  });
+}
 
 export async function initializeNotifications() {
   const perm = await LocalNotifications.requestPermissions();
@@ -67,4 +109,4 @@ export async function initializeNotifications() {
   }
 }
 
-export {getCurrentReminder};
+export {getCurrentReminder,getReminderById,deleteReminderById};
