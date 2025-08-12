@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'DHBWVS-NotificationApp',
+  appId: 'com.mlv.reminders',
+  appName: 'Reminders',
   webDir: 'dist',
   plugins:{
     LocalNotifications:{
