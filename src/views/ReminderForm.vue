@@ -26,13 +26,13 @@
             <ion-label>Uhrzeit</ion-label>
             <ion-datetime-button datetime="datetime"></ion-datetime-button>
             <ion-modal :keep-contents-mounted="true">
-                <ion-datetime v-model="toDate" id="datetime"
-                    locale="de-DE">
+                <ion-datetime id="datetime"
+                    v-model="toDate" locale="de-DE">
                     <span slot="time-label">Uhrzeit</span>
                 </ion-datetime>
             </ion-modal>
             <ion-button  expand="block" @click="addReminder" shape="round">Speichern</ion-button>
-            <ion-button v-if="isEditMode" @click="showDeleteAlert = true" expand="block" color="danger" id="deleteAlert" shape="round">Löschen</ion-button>
+            <ion-button v-if="isEditMode" @click="showDeleteAlert = true;" expand="block" color="danger" id="deleteAlert" shape="round">Löschen</ion-button>
         </ion-content>
          <ion-alert v-if="isEditMode"
             header="Löschen"
@@ -47,12 +47,13 @@
 
 <script lang="ts">
 
-import { IonAlert,IonPopover,IonItem,IonList,IonBackButton,IonButtons,IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
+import {IonModal, IonDatetimeButton,IonAlert,IonPopover,IonItem,IonList,IonBackButton,IonButtons,IonIcon,IonLabel, IonDatetime, IonButton,IonPage,IonHeader,IonContent,IonInput, IonToolbar, IonTitle } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import {listOutline,pencil,ellipsisVertical} from 'ionicons/icons'
 import { createReminder, saveReminder,getReminderById, editReminder,deleteReminderById } from '@/utils/reminderHelpers';
 import { useRoute } from 'vue-router';
 import { Preferences } from '@capacitor/preferences';
+import { formatInTimeZone } from 'date-fns-tz';
 
 export default defineComponent({
     name:'ReminderFormComponent',
@@ -67,7 +68,7 @@ export default defineComponent({
             isEditMode: false,
             title:"",
             details:"",
-            toDate: null as string | null,
+            toDate: formatInTimeZone(new Date(),'Europe/Berlin', "yyyy-MM-dd'T'HH:mm"),
             showErrors:false,
             showDeleteAlert:false,
             alertButtons:[
