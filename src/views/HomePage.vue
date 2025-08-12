@@ -81,10 +81,19 @@
       calcDueDate(dS:string){
         const t = new Date(dS).getTime();
         const now = Date.now();
+        const currentDate = new Date();
+        const givenDate = new Date(dS);
         let diff = t - now;
-        if(diff < 0){
-          return "Zeit abgelaufen"
+        const isToday = givenDate.getFullYear() === currentDate.getFullYear()
+                        && givenDate.getMonth() === currentDate.getMonth()
+                        && givenDate.getDate() === currentDate.getDate();
+        if(isToday){
+          return "Heute fällig";
         }
+        if(diff < 0){
+          return "Vergangen"
+        }
+        return "";
       }
     },
     data(){
