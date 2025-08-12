@@ -27,12 +27,17 @@
             <ion-datetime-button datetime="datetime"></ion-datetime-button>
             <ion-modal :keep-contents-mounted="true">
                 <ion-datetime id="datetime"
-                    v-model="toDate" locale="de-DE">
+                    v-model="toDate" locale="de-DE"
+                      presentation="date-time"
+                      :show-default-buttons="true"
+                      done-text="OK"
+                      cancel-text="Abbrechen"
+                    >
                     <span slot="time-label">Uhrzeit</span>
                 </ion-datetime>
             </ion-modal>
-            <ion-button  expand="block" @click="addReminder" shape="round">Speichern</ion-button>
-            <ion-button v-if="isEditMode" @click="showDeleteAlert = true;" expand="block" color="danger" id="deleteAlert" shape="round">Löschen</ion-button>
+            <ion-button class="ion-margin-top" expand="block" @click="addReminder" shape="round">Speichern</ion-button>
+            <ion-button class="ion-margin-top" v-if="isEditMode" @click="showDeleteAlert = true;" expand="block" color="danger" id="deleteAlert" shape="round">Löschen</ion-button>
         </ion-content>
          <ion-alert v-if="isEditMode"
             header="Löschen"
