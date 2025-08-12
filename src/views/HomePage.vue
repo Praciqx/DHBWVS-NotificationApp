@@ -20,7 +20,7 @@
               :style="{backgroundColor:'rgba(165,206,227,255)',color:'#1a1a1a'}" 
               @click="editReminder(r)">
               <ion-card-header>
-                <ion-card-title>{{ r.title }}</ion-card-title>
+                <ion-card-title :style="{color:'#1a1a1a'}">{{ r.title }}</ion-card-title>
               </ion-card-header>
               <ion-card-content>
                 {{ new Date(r.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
