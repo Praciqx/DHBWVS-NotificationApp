@@ -17,7 +17,7 @@
               </div>
             </div>
             <ion-card style="width: 100%;" 
-              :style="{backgroundColor:'rgba(62, 201, 238, 0.65)',color:'#1a1a1a'}" 
+              :style="{backgroundColor:'rgba(165,206,227,255)',color:'#1a1a1a'}" 
               @click="editReminder(r)">
               <ion-card-header>
                 <ion-card-title>{{ r.title }}</ion-card-title>

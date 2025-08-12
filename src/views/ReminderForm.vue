@@ -63,12 +63,14 @@ export default defineComponent({
     },
     components:{IonAlert,IonModal,IonDatetimeButton,IonPopover, IonList, IonItem,IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
+        //richtige Timezone rauslesen damit die Zeit korrekt eingestellt wird statt fix Berlin
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         return {
             id: null as string | null,
             isEditMode: false,
             title:"",
             details:"",
-            toDate: formatInTimeZone(new Date(),'Europe/Berlin', "yyyy-MM-dd'T'HH:mm"),
+            toDate: formatInTimeZone(new Date(), timeZone, "yyyy-MM-dd'T'HH:mm"),
             showErrors:false,
             showDeleteAlert:false,
             alertButtons:[
@@ -86,6 +88,9 @@ export default defineComponent({
             this.getReminder();
         }
     },
+    ionViewWillEnter(){
+
+    },
     methods:{
         async addReminder(){
             if(!this.title.trim()){
@@ -99,13 +104,13 @@ export default defineComponent({
                 await saveReminder(reminderObj);
             }
             (document.activeElement as any).blur();
-            this.$router.push({ name: 'Home' });
+            this.$router.replace({ name: 'Home' });
         },
         async deleteReminder(){
             await deleteReminderById(this.id);
             this.showDeleteAlert = false;
             (document.activeElement as any).blur();
-            this.$router.push({ name: 'Home' });
+            this.$router.replace({ name: 'Home' });
         },
         async getReminder(){
             const rem = await getReminderById(this.id);
