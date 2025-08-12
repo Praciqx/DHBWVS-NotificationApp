@@ -6,7 +6,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ion-list v-for="r in reminders" :key="r.id" lines="none">
+      <ion-list v-for="r in sortedReminders" :key="r.id" lines="none">
           <ion-item>
             <div style="text-align:center; width:48px;">
               <div style="font-size:20px; font-weight:bold;">
@@ -74,6 +74,13 @@
     },
     async created(){
       this.reminders = await getCurrentReminder();
+    },
+    computed:{
+      sortedReminders(): any[]{
+        return this.reminders.slice().sort((a: any, b: any) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+      }
     }
   });
 
