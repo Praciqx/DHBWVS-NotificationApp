@@ -42,7 +42,10 @@ export async function scheduleNotification(id:string, title: string, details: st
         title: title,
         body: details,
         id: Math.floor(Math.random() * 1000000), 
-        schedule: { at: new Date(date)}, 
+        schedule: { 
+          at: new Date(date),
+          allowWhileIdle: true,
+        }, 
         sound: undefined,
         smallIcon: "ic_stat_icon_config_sample",
         actionTypeId: "reminders",
