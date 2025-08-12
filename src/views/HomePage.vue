@@ -33,33 +33,32 @@
         <ion-fab-button title="addReminder" @click="navigateToAdd()">
           <ion-icon :icon="add" title="addReminderIcon"></ion-icon>
         </ion-fab-button>
-      </ion-fab>
+      </ion-fab> 
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-  import { IonItem,IonList,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonIcon,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/vue';
+  import { IonAlert,IonItem,IonList,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonIcon,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/vue';
   import { defineComponent } from 'vue';
   import {add,trash} from 'ionicons/icons'
-  import { useIonRouter } from '@ionic/vue';
   import { getCurrentReminder } from '@/utils/reminderHelpers';
   import { useRouter } from 'vue-router';
 
   export default defineComponent({
-    components: { IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
+    components: {IonAlert, IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
     setup(){
       const router = useRouter();
-      const ionRouter = useIonRouter();
-      return {add, router, ionRouter,trash};
+      return {add, router,trash};
     },
     methods:{
       navigateToAdd(){
-        // this.router.push({name:'AddReminder'})
-        this.ionRouter.navigate('add');
+        (document.activeElement as any).blur();
+        this.router.push('/add')
       },
       editReminder(r:any){
-        this.router.push({ name: 'EditReminder', params: { id: r.id } })
+        (document.activeElement as any).blur();
+        this.router.push(`/edit/${r.id}`)
       },
       async load(){
         this.reminders = await getCurrentReminder();

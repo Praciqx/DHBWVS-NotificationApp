@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import HomePage from '../views/HomePage.vue';
-import AddReminderComponent from '../views/AddReminderComponent.vue';
-import ReminderForm from '@/views/ReminderForm.vue';
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -15,13 +14,14 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path:'/add',
-    name:'AddReminder',
-    component: ReminderForm,
+    name:'add',
+    // component: ReminderForm,
+    component: () => import('@/views/ReminderForm.vue')
   },
   {
     path:'/edit/:id',
-    name:'EditReminder',
-    component: ReminderForm,
+    name:'edit',
+    component: () => import('@/views/ReminderForm.vue'),
     props:true,
   },
 ]
@@ -30,5 +30,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
+
 
 export default router
