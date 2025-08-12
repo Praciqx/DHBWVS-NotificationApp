@@ -24,19 +24,22 @@
                   <ion-icon slot="start" :icon="listOutline"></ion-icon>
             </ion-input>
             <ion-label>Uhrzeit</ion-label>
-             <ion-datetime v-model="toDate"
-                :value="toDate"
-                locale="de-DE">
-                <span slot="time-label">Uhrzeit</span>
-            </ion-datetime>
-            <ion-button expand="block" @click="addReminder" shape="round">Speichern</ion-button>
-            <ion-button v-if="isEditMode" expand="block" color="danger" id="deleteAlert" shape="round">Löschen</ion-button>
+            <ion-datetime-button datetime="datetime"></ion-datetime-button>
+            <ion-modal :keep-contents-mounted="true">
+                <ion-datetime v-model="toDate" id="datetime"
+                    locale="de-DE">
+                    <span slot="time-label">Uhrzeit</span>
+                </ion-datetime>
+            </ion-modal>
+            <ion-button  expand="block" @click="addReminder" shape="round">Speichern</ion-button>
+            <ion-button v-if="isEditMode" @click="showDeleteAlert = true" expand="block" color="danger" id="deleteAlert" shape="round">Löschen</ion-button>
         </ion-content>
-         <ion-alert
-            trigger="deleteAlert"
+         <ion-alert v-if="isEditMode"
             header="Löschen"
             message="Möchten Sie diese Erinnerung löschen?"
             :buttons="alertButtons"
+            :is-open="showDeleteAlert"
+            @didDismiss="showDeleteAlert = false"
             >
         </ion-alert>
     </ion-page>
@@ -57,15 +60,16 @@ export default defineComponent({
         const route = useRoute();
         return {listOutline,pencil, route,ellipsisVertical};
     },
-    components:{IonAlert,Preferences,IonPopover, IonList, IonItem,IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
+    components:{IonAlert,IonModal,IonDatetimeButton,IonPopover, IonList, IonItem,IonBackButton,IonButtons,IonIcon,IonLabel,IonDatetime,IonTitle,IonButton,IonInput,IonContent,IonPage,IonHeader,IonToolbar},
     data() {
         return {
             id: null as string | null,
             isEditMode: false,
             title:"",
             details:"",
-            toDate: new Date().toISOString(),
+            toDate: null as string | null,
             showErrors:false,
+            showDeleteAlert:false,
             alertButtons:[
                 {text:'Abbrechen',role:'cancel'},
                 {text:'Ja',role:'confirm',handler:()=>this.deleteReminder()}
@@ -99,7 +103,8 @@ export default defineComponent({
             this.$router.push({ name: 'Home' });
         },
         async deleteReminder(){
-            deleteReminderById(this.id);
+            await deleteReminderById(this.id);
+            this.showDeleteAlert = false;
             this.$router.push({ name: 'Home' });
         },
         async getReminder(){
