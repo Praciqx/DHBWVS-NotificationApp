@@ -6,7 +6,11 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ion-list v-for="r in sortedReminders" :key="r.id" lines="none">
+      <ion-list v-for="(r,i) in sortedReminders" :key="r.id" lines="none">
+        <ion-item-divider
+          v-if="i===0 || !isSameMonth(sortedReminders[i-1].date, r.date)"sticky class="month-banner">
+          <ion-label>{{ monthLabel(r.date) }}</ion-label>
+        </ion-item-divider>
           <ion-item>
             <div style="text-align:center; width:48px;">
               <div style="font-size:20px; font-weight:bold;">
@@ -25,6 +29,9 @@
               <ion-card-content>
                 {{ new Date(r.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
                 <span v-if="r.details"> – {{ r.details }}</span>
+                <div>
+                  <ion-note class="due-note" color="medium">{{r.due}}</ion-note>
+                </div>
               </ion-card-content>
             </ion-card>
           </ion-item>
@@ -39,14 +46,14 @@
 </template>
 
 <script lang="ts">
-  import { IonAlert,IonItem,IonList,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonIcon,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/vue';
+  import { IonLabel,IonItemDivider,IonAlert,IonItem,IonList,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonIcon,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/vue';
   import { defineComponent } from 'vue';
   import {add,trash} from 'ionicons/icons'
   import { getCurrentReminder } from '@/utils/reminderHelpers';
   import { useRouter } from 'vue-router';
 
   export default defineComponent({
-    components: {IonAlert, IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
+    components: {IonLabel,IonItemDivider,IonAlert, IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
     setup(){
       const router = useRouter();
       return {add, router,trash};
@@ -61,7 +68,23 @@
         this.router.push(`/edit/${r.id}`)
       },
       async load(){
-        this.reminders = await getCurrentReminder();
+        const reminderList = await getCurrentReminder();
+        this.reminders = reminderList.map((r:any) => ({ ...r, due: this.calcDueDate(r.date) }));
+      },
+      isSameMonth(a: string, b: string){
+        const da = new Date(a), db = new Date(b);
+        return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth();
+      },
+      monthLabel(d: string){
+        return new Date(d).toLocaleDateString('de-DE', { month: 'long' });
+      },
+      calcDueDate(dS:string){
+        const t = new Date(dS).getTime();
+        const now = Date.now();
+        let diff = t - now;
+        if(diff < 0){
+          return "Zeit abgelaufen"
+        }
       }
     },
     data(){
@@ -86,21 +109,15 @@
 
 </script>
 
- <!-- <style>
-  :root {
-    /**
-   * Setting the variables for DEMO purposes only.
-   * Values will be set automatically when building an iOS or Android app.
-   */
-    --ion-safe-area-top: 0px;
-    --ion-safe-area-bottom: 40px;
-  }
-</style>   -->
-
 <style scoped>
+.month-banner {
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  font-size: 1.5rem;
+  border:1px;
+}
 #container {
   text-align: center;
-  
   position: absolute;
   left: 0;
   right: 0;
@@ -130,4 +147,5 @@ ion-fab {
     margin-bottom: var(--ion-safe-area-bottom, 0);
   }
 </style>
+
 
