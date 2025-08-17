@@ -111,12 +111,14 @@ export default defineComponent({
             this.$router.replace({ name: 'Home' });
         },
         async deleteReminder(){
+            if(!this.id) return;
             await deleteReminderById(this.id);
             this.showDeleteAlert = false;
             (document.activeElement as any).blur();
             this.$router.replace({ name: 'Home' });
         },
         async getReminder(){
+            if(!this.id) return;
             const rem = await getReminderById(this.id);
             if(rem){
                 this.title = rem.title;
