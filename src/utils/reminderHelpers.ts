@@ -76,18 +76,18 @@ async function removeNotificationById(reminderId:string){
     }
 }
 
-const getCurrentReminder = async () => {
+export async function getCurrentReminder(){
   const { value } = await Preferences.get({ key: 'reminders' });
   return value ? JSON.parse(value) : [];
 };
 
-const getReminderById = async (id:any) => {
+export async function getReminderById(id:string){
   const currentReminder = await getCurrentReminder();
   const reminder = currentReminder.find((r: any) => r.id === id);
   return reminder || null;
 }
 
-const deleteReminderById = async(id:any) =>{
+export async function deleteReminderById(id:string){
   const currentReminder = await getCurrentReminder();
   const newReminders = currentReminder.filter((r: { id: string }) => r.id !== id);
   await Preferences.set({
@@ -108,5 +108,3 @@ export async function initializeNotifications() {
     });
   }
 }
-
-export {getCurrentReminder,getReminderById,deleteReminderById};

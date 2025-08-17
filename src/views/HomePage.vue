@@ -59,9 +59,6 @@
     ionViewWillEnter() {
       this.load();
     },
-    async created(){
-      this.reminders = await getCurrentReminder();
-    },
     computed:{
       todayList(){
         return this.reminders
@@ -120,7 +117,7 @@
 ion-fab {
     margin-top: var(--ion-safe-area-top, 0);
     margin-bottom: var(--ion-safe-area-bottom, 0);
-  }
+}
 </style>
 
 
