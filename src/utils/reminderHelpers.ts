@@ -35,7 +35,6 @@ export async function editReminder(reminderobject:any){
 }
 
 export async function scheduleNotification(id:string, title: string, details: string, date: Date) {
-  console.log(date);
   await LocalNotifications.schedule({
     notifications: [
       {
@@ -63,7 +62,6 @@ export async function scheduleNotification(id:string, title: string, details: st
 
 async function removeNotificationById(reminderId:string){
     const pending = await LocalNotifications.getPending();
-    console.log(pending);
     const toCancel = pending.notifications
       .filter(n => (n.extra as any)?.reminderId === reminderId)
       .map(n => ({ id: n.id }));
