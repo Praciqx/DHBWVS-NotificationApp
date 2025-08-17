@@ -6,36 +6,9 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ion-list v-for="(r,i) in sortedReminders" :key="r.id" lines="none">
-        <ion-item-divider
-          v-if="i===0 || !isSameMonth(sortedReminders[i-1].date, r.date)"sticky class="month-banner">
-          <ion-label>{{ monthLabel(r.date) }}</ion-label>
-        </ion-item-divider>
-          <ion-item>
-            <div style="text-align:center; width:48px;">
-              <div style="font-size:20px; font-weight:bold;">
-                {{ new Date(r.date).getDate() }}
-              </div>
-              <div style="font-size:14px; color:gray;">
-                {{ new Date(r.date).toLocaleDateString('de-DE', { weekday: 'short',month:'short' }) }}
-              </div>
-            </div>
-            <ion-card style="width: 100%;" 
-              :style="{backgroundColor:'rgba(165,206,227,255)',color:'#1a1a1a'}" 
-              @click="editReminder(r)">
-              <ion-card-header>
-                <ion-card-title :style="{color:'#1a1a1a'}">{{ r.title }}</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                {{ new Date(r.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
-                <span v-if="r.details"> – {{ r.details }}</span>
-                <div>
-                  <ion-note class="due-note" color="medium">{{r.due}}</ion-note>
-                </div>
-              </ion-card-content>
-            </ion-card>
-          </ion-item>
-      </ion-list>
+      <ReminderList title="Heute" :items="todayList" @edit="editReminder" />
+      <ReminderList title="Zukunft" :items="futureList" @edit="editReminder" />
+      <ReminderList title="Vergangen" :items="pastList" @edit="editReminder" />
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button title="addReminder" @click="navigateToAdd()">
           <ion-icon :icon="add" title="addReminderIcon"></ion-icon>
@@ -51,9 +24,10 @@
   import {add,trash} from 'ionicons/icons'
   import { getCurrentReminder } from '@/utils/reminderHelpers';
   import { useRouter } from 'vue-router';
+  import ReminderList from './ReminderList.vue';
 
   export default defineComponent({
-    components: {IonLabel,IonItemDivider,IonAlert, IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
+    components: {ReminderList,IonLabel,IonItemDivider,IonAlert, IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
     setup(){
       const router = useRouter();
       return {add, router,trash};
@@ -69,34 +43,13 @@
       },
       async load(){
         const reminderList = await getCurrentReminder();
-        this.reminders = reminderList.map((r:any) => ({ ...r, due: this.calcDueDate(r.date) }));
+        this.reminders = reminderList;
       },
-      // #region nur Design
-      isSameMonth(a: string, b: string){
-        const da = new Date(a), db = new Date(b);
-        return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth();
+      isToday(dateString:string){
+        const dt = new Date(dateString);
+        const n = new Date();
+        return dt.getFullYear()===n.getFullYear() && dt.getMonth()===n.getMonth() && dt.getDate()===n.getDate();
       },
-      monthLabel(d: string){
-        return new Date(d).toLocaleDateString('de-DE', { month: 'long' });
-      },
-      calcDueDate(dS:string){
-        const t = new Date(dS).getTime();
-        const now = Date.now();
-        const currentDate = new Date();
-        const givenDate = new Date(dS);
-        let diff = t - now;
-        const isToday = givenDate.getFullYear() === currentDate.getFullYear()
-                        && givenDate.getMonth() === currentDate.getMonth()
-                        && givenDate.getDate() === currentDate.getDate();
-        if(isToday){
-          return "Heute fällig";
-        }
-        if(diff < 0){
-          return "Vergangen"
-        }
-        return "";
-      }
-      // #endregion
     },
     data(){
       return {
@@ -106,18 +59,26 @@
     ionViewWillEnter() {
       this.load();
     },
-    async created(){
-      this.reminders = await getCurrentReminder();
-    },
     computed:{
-      sortedReminders(): any[]{
-        return this.reminders.slice().sort((a: any, b: any) =>
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
+      todayList(){
+        return this.reminders
+        .filter(r => this.isToday(r.date))
+        .sort((a,b)=> new Date(a.date).getTime() - new Date(b.date).getTime());
+      },
+      futureList(){
+        const now = Date.now();
+        return this.reminders
+          .filter(r => !this.isToday(r.date) && new Date(r.date).getTime() > now)
+          .sort((a,b)=> new Date(a.date).getTime() - new Date(b.date).getTime());
+      },
+      pastList(){
+        const now = Date.now();
+        return this.reminders
+          .filter(r => !this.isToday(r.date) && new Date(r.date).getTime() < now)
+          .sort((a,b)=> new Date(b.date).getTime() - new Date(a.date).getTime());
+        }
       }
-    }
   });
-
 </script>
 
 <style scoped>
@@ -156,7 +117,7 @@
 ion-fab {
     margin-top: var(--ion-safe-area-top, 0);
     margin-bottom: var(--ion-safe-area-bottom, 0);
-  }
+}
 </style>
 
 

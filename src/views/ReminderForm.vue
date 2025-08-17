@@ -57,7 +57,6 @@ import { defineComponent } from 'vue';
 import {listOutline,pencil,ellipsisVertical} from 'ionicons/icons'
 import { createReminder, saveReminder,getReminderById, editReminder,deleteReminderById } from '@/utils/reminderHelpers';
 import { useRoute } from 'vue-router';
-import { Preferences } from '@capacitor/preferences';
 import { formatInTimeZone } from 'date-fns-tz';
 
 export default defineComponent({
