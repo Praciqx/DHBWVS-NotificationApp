@@ -8,7 +8,6 @@ export function createReminder(title:string, details:string, date:string, id?:st
         title: title,
         details: details,
         date: date,
-        done:false,
     }
 }
 

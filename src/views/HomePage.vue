@@ -8,7 +8,7 @@
     <ion-content :fullscreen="true">
       <ReminderList title="Heute" :items="todayList" @edit="editReminder" />
       <ReminderList title="Zukunft" :items="futureList" @edit="editReminder" />
-      <ReminderList title="Vergangen" :items="pastList" @edit="editReminder" />
+      <ReminderList title="Vergangenheit" :items="pastList" @edit="editReminder" />
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button title="addReminder" @click="navigateToAdd()">
           <ion-icon :icon="add" title="addReminderIcon"></ion-icon>

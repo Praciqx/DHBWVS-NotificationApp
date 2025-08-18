@@ -31,7 +31,7 @@
                       presentation="date-time"
                       :show-default-buttons="true"
                       done-text="OK"
-                      cancel-text="Abbrechen"
+                      cancel-text="Abbrechen" max="2099-12-09"
                     >
                     <span slot="time-label">Uhrzeit</span>
                 </ion-datetime>
