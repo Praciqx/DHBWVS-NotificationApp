@@ -6,9 +6,9 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ReminderList title="Heute" :items="todayList" @edit="editReminder" />
-      <ReminderList title="Zukunft" :items="futureList" @edit="editReminder" />
-      <ReminderList title="Vergangenheit" :items="pastList" @edit="editReminder" />
+      <ReminderList title="Heute" :items="todayList" @edit="editReminder" @delete="deleteReminder" />
+      <ReminderList title="Zukunft" :items="futureList" @edit="editReminder" @delete="deleteReminder" />
+      <ReminderList title="Vergangenheit" :items="pastList" @edit="editReminder" @delete="deleteReminder" />
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button title="addReminder" @click="navigateToAdd()">
           <ion-icon :icon="add" title="addReminderIcon"></ion-icon>
@@ -25,6 +25,7 @@
   import { getCurrentReminder } from '@/utils/reminderHelpers';
   import { useRouter } from 'vue-router';
   import ReminderList from './ReminderList.vue';
+  import { deleteReminderById } from '@/utils/reminderHelpers';
 
   export default defineComponent({
     components: {ReminderList,IonLabel,IonItemDivider,IonAlert, IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
@@ -50,15 +51,23 @@
         const n = new Date();
         return dt.getFullYear()===n.getFullYear() && dt.getMonth()===n.getMonth() && dt.getDate()===n.getDate();
       },
+      async deleteReminder(id:string){
+        if(!id) return;
+        await deleteReminderById(id);
+        this.showDeleteAlert = false;
+        (document.activeElement as any).blur();
+        this.load();
+      },
     },
     data(){
       return {
         reminders:[] as any[],
+        showDeleteAlert:false
       }
     },  
     ionViewWillEnter() {
       this.load();
-    },
+    },     
     computed:{
       todayList(){
         return this.reminders
