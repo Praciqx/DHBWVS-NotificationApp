@@ -26,11 +26,13 @@
   import { useRouter } from 'vue-router';
   import ReminderList from './ReminderList.vue';
   import { deleteReminderById } from '@/utils/reminderHelpers';
+  import { toastController } from '@ionic/vue'
 
   export default defineComponent({
     components: {ReminderList,IonLabel,IonItemDivider,IonAlert, IonItem,IonList,IonIcon,IonFabButton,IonContent, IonTitle, IonToolbar, IonHeader,IonFab,IonPage,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle },
     setup(){
       const router = useRouter();
+  
       return {add, router,trash};
     },
     methods:{
@@ -54,15 +56,22 @@
       async deleteReminder(id:string){
         if(!id) return;
         await deleteReminderById(id);
-        this.showDeleteAlert = false;
         (document.activeElement as any).blur();
         this.load();
+        this.showToast("Erinnerung wurde gelöscht.");
       },
+      async showToast(message:string){
+        const toast = await toastController.create({
+          message,
+          duration: 2000,
+          position: 'bottom', 
+        })
+        await toast.present()
+      }
     },
     data(){
       return {
         reminders:[] as any[],
-        showDeleteAlert:false
       }
     },  
     ionViewWillEnter() {
